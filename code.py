@@ -1,78 +1,148 @@
-# SPDX-FileCopyrightText: 2020 John Park for Adafruit Industries
-#
-# SPDX-License-Identifier: MIT
-
-# Matrix Weather display
-# For Metro M4 Airlift with RGB Matrix shield, 64 x 32 RGB LED Matrix display
-
-"""
-This example queries the Open Weather Maps site API to find out the current
-weather for your location... and display it on a screen!
-if you can find something that spits out JSON data, we can display it
-"""
 import time
-import board
-from digitalio import DigitalInOut, Direction, Pull
-from adafruit_matrixportal.network import Network
+import displayio
+import terminalio
 from adafruit_matrixportal.matrix import Matrix
-import openweather_graphics  # pylint: disable=wrong-import-position
+from adafruit_display_text.label import Label
+from adafruit_matrixportal.network import Network
+from adafruit_bitmap_font import bitmap_font
+import board
+from weather_api import fetch_weather_data
 
-# Get wifi details and more from a secrets.py file
-try:
-    from secrets import secrets
-except ImportError:
-    print("WiFi secrets are kept in secrets.py, please add them there!")
-    raise
-
-UNITS = "imperial"
-print("Jumper set to imperial")
-HEADERS = {"x-api-key": "bTK3tM6Zwj8cHACQtSRH26aEFwzeQ4ns9YInqoj5"}
-# Use cityname, country code where countrycode is ISO3166 format.
-# E.g. "New York, US" or "London, GB"
-LOCATION = "37167"
-print("Getting weather for {}".format(LOCATION))
-# Set up from where we'll be fetching data
-DATA_SOURCE = (
-    "https://api.taylorsweatherapi.com/?zipcode=" + LOCATION
-)
-# it goes in your secrets.py file on a line such as:
-# 'openweather_token' : 'your_big_humongous_gigantor_token',
-SCROLL_HOLD_TIME = 0  # set this to hold each line before finishing scroll
+FETCH_INTERVAL_SECONDS = 900 # 15 minutes
 
 # --- Display setup ---
-matrix = Matrix()
-network = Network(status_neopixel=board.NEOPIXEL, debug=True)
-if UNITS in ("imperial", "metric"):
-    gfx = openweather_graphics.OpenWeather_Graphics(
-        matrix.display, am_pm=True, units=UNITS
-    )
+matrix = Matrix(width=64, height=32, bit_depth=4)
+display = matrix.display
 
-print("gfx loaded")
-localtime_refresh = None
-weather_refresh = None
+current_weather_tile_grid = None
+
+WEATHER_IMAGES = {
+        "Sunny": "/images/sunny.bmp",
+        "Clear": "/images/moon.bmp",
+        "Cldy": "/images/cloudy.bmp",
+        "Rain": "/images/rain.bmp",
+        "TStorms": "/images/thunder.bmp",
+        "Snow": "/images/snow.bmp",
+        "Misty": "/images/cloudy.bmp",
+    }
+
+# Create a display group
+group = displayio.Group()
+display.root_group = group
+
+image_grid = None
+image_index = 0 
+
+font = bitmap_font.load_font("fonts/Roboto-Regular-8pt.bdf")
+
+# Add labels for showing the data
+status_area = Label(
+    terminalio.FONT,
+    text="Loading...",
+    color=0x00FF00,
+    x=1,
+    y=15,
+    scale=1,
+)
+
+temperature_area = Label(
+    terminalio.FONT,
+    text="",
+    color=0x00FF00,
+    x=33,
+    y=24,
+    scale=1,
+)
+
+description_area = Label(
+    terminalio.FONT,
+    text="",
+    color=0x00FF00,
+    x=33,
+    y=8,
+    scale=1,
+)
+
+# Add ALL labels to the group immediately
+group.append(status_area)
+group.append(temperature_area)
+group.append(description_area)
+
+display.refresh()
+
+# --- Network setup ---
+network = Network(status_neopixel=board.NEOPIXEL, debug=False)
+network.connect()
+
+def clean_condition(condition, is_day):
+    condition_mapping = {
+        "01d":"Sunny",
+        "02d":"Clear",
+        "03d":"Cldy",
+        "04d":"Cldy",
+        "09d":"Rain",
+        "10d":"Rain",
+        "11d":"TStorms",
+        "13d":"Snow",
+        "50d":"Misty",
+        "01n":"Clear",
+        "02n":"Cldy",
+        "03n":"Cldy",
+        "04n":"Cldy",
+        "09n":"Rain",
+        "10n":"Rain",
+        "11n":"TStorms",
+        "13n":"Snow",
+        "50n":"Misty",
+
+    }
+    return condition_mapping.get(condition, condition)
+
+def load_weather_image(condition):
+    """Load the appropriate weather image based on the condition."""
+    global current_weather_tile_grid
+    if current_weather_tile_grid is not None:
+        try:
+            if current_weather_tile_grid in group:
+                group.remove(current_weather_tile_grid)
+        except ValueError:
+            pass
+    if condition is None:
+        return
+
+    image_key = WEATHER_IMAGES.get(condition, "/images/sunny.bmp")
+    if condition is not "empty":
+        bitmap = displayio.OnDiskBitmap(image_key)
+        tile_grid = displayio.TileGrid(bitmap, pixel_shader=bitmap.pixel_shader, tile_width=32, tile_height=32, width=1, height=1)
+        group.append(tile_grid)
+        current_weather_tile_grid = tile_grid
+
 while True:
-    # only query the online time once per hour (and on first run)
-    if (not localtime_refresh) or (time.monotonic() - localtime_refresh) > 3600:
-        try:
-            print("Getting time from internet!")
-            network.get_local_time()
-            localtime_refresh = time.monotonic()
-        except RuntimeError as e:
-            print("Some error occured, retrying! -", e)
-            continue
+    temperature_area.text = ""
+    description_area.text = ""
+    load_weather_image("empty")
+    weather_data = fetch_weather_data(status_area, network_client=network)
 
-    # only query the weather every 10 minutes (and on first run)
-    if (not weather_refresh) or (time.monotonic() - weather_refresh) > 600:
+    if weather_data:
+        current = weather_data['current']
+
+        # Access nested values
+        temperature = current['temperature']
+        icon = current['icon']
+
+        # Format the temperature text
+        text = "{}°F".format(temperature)
         
-        try:
-            value = network.fetch_data(DATA_SOURCE, json_path=([],), headers=HEADERS)
-            print("Response is", value)
-            gfx.display_weather(value)
-            weather_refresh = time.monotonic()
-        except RuntimeError as e:
-            print("Some error occured, retrying! -", e)
-            continue
+        # Clean up the description
+        cleanDescription = clean_condition(icon, True)
+        
+        # Load the weather image
+        load_weather_image(cleanDescription)
+        
+        # Update text areas
+        temperature_area.text = text
+        description_area.text = cleanDescription
+    else:
+        print("Failed to fetch data")
 
-    gfx.scroll_next_label()
-    # Pause between labels
-    time.sleep(SCROLL_HOLD_TIME)
+    time.sleep(FETCH_INTERVAL_SECONDS)
