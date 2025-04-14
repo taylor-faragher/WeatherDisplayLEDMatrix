@@ -94,7 +94,6 @@ def clean_condition(condition, is_day):
         "11n":"TStorms",
         "13n":"Snow",
         "50n":"Misty",
-
     }
     return condition_mapping.get(condition, condition)
 
@@ -118,9 +117,6 @@ def load_weather_image(condition):
         current_weather_tile_grid = tile_grid
 
 while True:
-    temperature_area.text = ""
-    description_area.text = ""
-    load_weather_image("empty")
     weather_data = fetch_weather_data(status_area, network_client=network)
 
     if weather_data:
