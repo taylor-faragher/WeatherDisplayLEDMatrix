@@ -57,7 +57,7 @@ temperature_area = Label(
 description_area = Label(
     terminalio.FONT,
     text="",
-    color=0x00FF00,
+    color=0xffffff,
     x=33,
     y=8,
     scale=1,
