@@ -63,10 +63,20 @@ description_area = Label(
     scale=1,
 )
 
+error_area = Label(
+    terminalio.FONT,
+    text="",
+    color=0xFF0000,
+    x=61,
+    y=28,
+    scale=1,
+)
+
 # Add ALL labels to the group immediately
 group.append(status_area)
 group.append(temperature_area)
 group.append(description_area)
+group.append(error_area)
 
 display.refresh()
 
