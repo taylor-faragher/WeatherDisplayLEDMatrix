@@ -84,6 +84,12 @@ display.refresh()
 network = Network(status_neopixel=board.NEOPIXEL, debug=False)
 network.connect()
 
+def set_error():
+    error_area.text = "."
+
+def clear_error():
+    error_area.text = ""
+
 def clean_condition(condition, is_day):
     condition_mapping = {
         "01d":"Sunny",
@@ -127,6 +133,7 @@ def load_weather_image(condition):
         current_weather_tile_grid = tile_grid
 
 while True:
+    clear_error()
     weather_data = fetch_weather_data(status_area, network_client=network)
 
     if weather_data:
@@ -149,6 +156,7 @@ while True:
         temperature_area.text = text
         description_area.text = cleanDescription
     else:
+        set_error()
         print("Failed to fetch data")
 
     time.sleep(FETCH_INTERVAL_SECONDS)
