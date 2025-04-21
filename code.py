@@ -7,6 +7,7 @@ from adafruit_matrixportal.network import Network
 from adafruit_bitmap_font import bitmap_font
 import board
 from weather_api import fetch_weather_data
+from get_temp_color import get_temp_color
 
 FETCH_INTERVAL_SECONDS = 900 # 15 minutes
 
@@ -142,7 +143,8 @@ while True:
         # Access nested values
         temperature = current['temperature']
         icon = current['icon']
-
+        temp_color = get_temp_color(temperature)
+        temperature_area.color = temp_color
         # Format the temperature text
         text = "{}°F".format(temperature)
         
