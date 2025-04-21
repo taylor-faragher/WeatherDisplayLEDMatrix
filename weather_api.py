@@ -14,7 +14,6 @@ HEADERS = {
 
 def fetch_weather_data(status_display_object, network_client):
     try:
-        status_display_object.text = "Fetching..."
         
         response = network_client.fetch(API_URL, headers=HEADERS)
 
@@ -23,7 +22,6 @@ def fetch_weather_data(status_display_object, network_client):
         print("Response:", data)
 
         if 'current' not in data:
-            status_display_object.text = ""
             raise KeyError("API response does not contain weather info")
 
         status_display_object.text = ""
@@ -32,5 +30,6 @@ def fetch_weather_data(status_display_object, network_client):
 
     except (ValueError, RuntimeError, KeyError, ConnectionError) as e:
         error_msg = f"Fetch Error: {str(e)}"
+        status_display_object.text = ""
         print(error_msg) 
         return None
