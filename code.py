@@ -19,16 +19,6 @@ display = matrix.display
 
 current_weather_tile_grid = None
 
-WEATHER_IMAGES = {
-        "Sunny": "/images/sunny.bmp",
-        "Clear": "/images/moon.bmp",
-        "Cldy": "/images/cloudy.bmp",
-        "Rain": "/images/rain.bmp",
-        "TStorms": "/images/thunder.bmp",
-        "Snow": "/images/snow.bmp",
-        "Misty": "/images/cloudy.bmp",
-    }
-
 # Create a display group
 group = displayio.Group()
 display.root_group = group
@@ -36,12 +26,12 @@ display.root_group = group
 image_grid = None
 image_index = 0 
 
-font = bitmap_font.load_font("fonts/Roboto-Regular-8pt.bdf")
+font = bitmap_font.load_font("fonts/TaylorsLEDFont-5.bdf")
 
 # Add labels for showing the data
 status_area = Label(
     terminalio.FONT,
-    text="Loading...",
+    text="LOADING...",
     color=0x00FF00,
     x=1,
     y=15,
@@ -58,7 +48,7 @@ temperature_area = Label(
 )
 
 description_area = Label(
-    terminalio.FONT,
+    font,
     text="",
     color=0xffffff,
     x=33,
@@ -95,26 +85,36 @@ def clear_error():
 
 def clean_condition(condition):
     condition_mapping = {
-        "01d":"Sunny",
-        "02d":"Clear",
-        "03d":"Cldy",
-        "04d":"Cldy",
-        "09d":"Rain",
-        "10d":"Rain",
-        "11d":"TStorms",
-        "13d":"Snow",
-        "50d":"Misty",
-        "01n":"Clear",
-        "02n":"Cldy",
-        "03n":"Cldy",
-        "04n":"Cldy",
-        "09n":"Rain",
-        "10n":"Rain",
-        "11n":"TStorms",
-        "13n":"Snow",
-        "50n":"Misty",
+        "01d":"SUNNY",
+        "02d":"SUNNY",
+        "03d":"CLOUDY",
+        "04d":"CLOUDY",
+        "09d":"RAINY",  
+        "10d":"RAIN",
+        "11d":"TSTORMS",
+        "13d":"SNOW",
+        "50d":"MISTY",
+        "01n":"CLEAR",
+        "02n":"CLOUDY",
+        "03n":"CLOUDY",
+        "04n":"CLOUDY",
+        "09n":"RAIN",
+        "10n":"RAIN",
+        "11n":"TSTORMS",
+        "13n":"SNOW",
+        "50n":"MISTY",
     }
     return condition_mapping.get(condition, condition)
+
+WEATHER_IMAGES = {
+        "SUNNY": "/images/sunny.bmp",
+        "CLEAR": "/images/moon.bmp",
+        "CLOUDY": "/images/cloudy.bmp",
+        "RAIN": "/images/rain.bmp",
+        "TSTORMS": "/images/thunder.bmp",
+        "SNOW": "/images/snow.bmp",
+        "MISTY": "/images/cloudy.bmp",
+    }
 
 def load_weather_image(condition):
     """Load the appropriate weather image based on the condition."""
@@ -141,7 +141,7 @@ def load_weather_image(condition):
 
 def set_loading_state():
     clear_error()
-    status_area.text = "Loading..."
+    status_area.text = "LOADING..."
     temperature_area.text = ""
     description_area.text = ""
     load_weather_image("none")
