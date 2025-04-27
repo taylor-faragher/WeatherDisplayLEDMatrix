@@ -8,7 +8,7 @@ from adafruit_bitmap_font import bitmap_font
 import board
 from weather_api import fetch_weather_data
 from get_temp_color import get_temp_color
-from weather_config import get_clean_description, get_image_path
+from weather_config import get_clean_description, get_image_path, get_x_offset
 
 FETCH_INTERVAL_SECONDS = 900 # 15 minutes
 GLOBAL_TEMPERATURE_VARIABLE = 0
@@ -175,6 +175,9 @@ while True:
     
         # Clean up the description
         cleanDescription = get_clean_description(icon)
+
+        # Set description offset
+        description_area.x = get_x_offset(icon)
         
         # Load the weather image
         load_weather_image(icon)
