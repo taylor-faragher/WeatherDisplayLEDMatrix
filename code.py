@@ -13,6 +13,9 @@ from weather_config import get_clean_description, get_image_path
 FETCH_INTERVAL_SECONDS = 900 # 15 minutes
 GLOBAL_TEMPERATURE_VARIABLE = 0
 GLOBAL_DESCRIPTION_VARIABLE = ""
+GLOBAL_HIGH_TEMP_VARIABLE = 0
+GLOBAL_LOW_TEMP_VARIABLE = 0
+GLOBAL_WIND_SPEED_VARIABLE = 0
 
 # --- Display setup ---
 matrix = Matrix(width=64, height=32, bit_depth=4)
@@ -152,38 +155,52 @@ while True:
     weather_data = fetch_weather_data(status_area, network_client=network)
 
     if weather_data:
+        # Destructure the current day's weather data
         current = weather_data['current']
 
         # Access nested values
         temperature = current['temperature']
         icon = current['icon']
+        min_temp = current['minTemperature']
+        max_temp = current['maxTemperature']
+        wind_speed = current['windSpeed']
         temp_color = get_temp_color(temperature)
         temperature_area.color = temp_color
 
-        # Format the temperature text
-        text = f"{temperature}F"
-        
+        # Format the strings
+        temperature_formatted = f"{temperature}F"
+        max_temp_formatted = f"{max_temp}F"
+        min_temp_formatted = f"{min_temp}F"
+        wind_speed_formatted = f"{wind_speed}MPH"
+    
         # Clean up the description
         cleanDescription = get_clean_description(icon)
         
         # Load the weather image
         load_weather_image(icon)
         
-        # Update global variables
-        GLOBAL_TEMPERATURE_VARIABLE = text
+        # Update global variables - This is so we have a fallback state of the data
+        GLOBAL_TEMPERATURE_VARIABLE = temperature_formatted
         GLOBAL_DESCRIPTION_VARIABLE = cleanDescription
+        GLOBAL_HIGH_TEMP_VARIABLE = max_temp_formatted
+        GLOBAL_LOW_TEMP_VARIABLE = min_temp_formatted
+        GLOBAL_WIND_SPEED_VARIABLE = wind_speed_formatted
+
         # Update text areas
-        temperature_area.text = text
+        temperature_area.text = temperature_formatted
         description_area.text = cleanDescription
-        high_temp_area.text = f"H {temperature}"
-        low_temp_area.text = f"L {temperature}"
-        wind_area.text = "10MPH"
+        high_temp_area.text = max_temp_formatted
+        low_temp_area.text = min_temp_formatted
+        wind_area.text = wind_speed_formatted
     else:
         # Turn on error state
         set_error()
-        # Set text to saved global variables
+        # Update text area to with fallback state data
         temperature_area.text = GLOBAL_TEMPERATURE_VARIABLE
         description_area.text = GLOBAL_DESCRIPTION_VARIABLE
+        high_temp_area.text = GLOBAL_HIGH_TEMP_VARIABLE
+        low_temp_area.text = GLOBAL_LOW_TEMP_VARIABLE
+        wind_area.text = GLOBAL_WIND_SPEED_VARIABLE
         load_weather_image(cleanDescription)
         print("Failed to fetch data")
 
