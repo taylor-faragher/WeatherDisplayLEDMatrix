@@ -8,6 +8,7 @@ from adafruit_bitmap_font import bitmap_font
 import board
 from weather_api import fetch_weather_data
 from get_temp_color import get_temp_color
+from weather_config import get_clean_description, get_image_path
 
 FETCH_INTERVAL_SECONDS = 900 # 15 minutes
 GLOBAL_TEMPERATURE_VARIABLE = 0
@@ -42,8 +43,8 @@ temperature_area = Label(
     terminalio.FONT,
     text="",
     color=0x00FF00,
-    x=40,
-    y=24,
+    x=39,
+    y=13,
     scale=1,
 )
 
@@ -123,39 +124,6 @@ def set_error():
 def clear_error():
     error_area.text = ""
 
-def clean_condition(condition):
-    condition_mapping = {
-        "01d":"SUNNY",
-        "02d":"SUNNY",
-        "03d":"CLOUDY",
-        "04d":"CLOUDY",
-        "09d":"RAINY",  
-        "10d":"RAIN",
-        "11d":"TSTORMS",
-        "13d":"SNOW",
-        "50d":"MISTY",
-        "01n":"CLEAR",
-        "02n":"CLOUDY",
-        "03n":"CLOUDY",
-        "04n":"CLOUDY",
-        "09n":"RAIN",
-        "10n":"RAIN",
-        "11n":"TSTORMS",
-        "13n":"SNOW",
-        "50n":"MISTY",
-    }
-    return condition_mapping.get(condition, condition)
-
-WEATHER_IMAGES = {
-        "SUNNY": "/images/sunny.bmp",
-        "CLEAR": "/images/moon.bmp",
-        "CLOUDY": "/images/cloudy.bmp",
-        "RAIN": "/images/rain.bmp",
-        "TSTORMS": "/images/thunder.bmp",
-        "SNOW": "/images/snow.bmp",
-        "MISTY": "/images/cloudy.bmp",
-    }
-
 def load_weather_image(condition):
     """Load the appropriate weather image based on the condition."""
     global current_weather_tile_grid
@@ -170,7 +138,7 @@ def load_weather_image(condition):
         return
 
     if condition is not None:
-        image_key = WEATHER_IMAGES.get(condition, "/images/sunny.bmp")
+        image_key = get_image_path(condition)
         if condition is not "empty":
             bitmap = displayio.OnDiskBitmap(image_key)
             tile_grid = displayio.TileGrid(bitmap, pixel_shader=bitmap.pixel_shader, tile_width=32, tile_height=32, width=1, height=1)
@@ -180,7 +148,7 @@ def load_weather_image(condition):
             current_weather_tile_grid = None
 
 while True:
-    set_loading_state()
+    set_fetching_state()
     weather_data = fetch_weather_data(status_area, network_client=network)
 
     if weather_data:
@@ -191,14 +159,15 @@ while True:
         icon = current['icon']
         temp_color = get_temp_color(temperature)
         temperature_area.color = temp_color
+
         # Format the temperature text
-        text = "{}°F".format(temperature)
+        text = f"{temperature}F"
         
         # Clean up the description
-        cleanDescription = clean_condition(icon)
+        cleanDescription = get_clean_description(icon)
         
         # Load the weather image
-        load_weather_image(cleanDescription)
+        load_weather_image(icon)
         
         # Update global variables
         GLOBAL_TEMPERATURE_VARIABLE = text
@@ -206,6 +175,9 @@ while True:
         # Update text areas
         temperature_area.text = text
         description_area.text = cleanDescription
+        high_temp_area.text = f"H {temperature}"
+        low_temp_area.text = f"L {temperature}"
+        wind_area.text = "10MPH"
     else:
         # Turn on error state
         set_error()
