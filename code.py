@@ -51,8 +51,35 @@ description_area = Label(
     font,
     text="",
     color=0xffffff,
-    x=33,
-    y=8,
+    x=32,
+    y=3,
+    scale=1,
+)
+
+wind_area = Label(
+    font,
+    text="",
+    color=0x00FFFF,
+    x=35,
+    y=20,
+    scale=1,
+)
+
+high_temp_area = Label(
+    font,
+    text="",
+    color=0xFF0000,
+    x=32,
+    y=27,
+    scale=1,
+)
+
+low_temp_area = Label(
+    font,
+    text="",
+    color=0x0000FF,
+    x=50,
+    y=27,
     scale=1,
 )
 
@@ -69,9 +96,22 @@ error_area = Label(
 group.append(status_area)
 group.append(temperature_area)
 group.append(description_area)
+group.append(wind_area)
+group.append(high_temp_area)
+group.append(low_temp_area)
 group.append(error_area)
 
 display.refresh()
+
+def set_fetching_state():
+    clear_error()
+    status_area.text = "FETCHING..."
+    temperature_area.text = ""
+    description_area.text = ""
+    wind_area.text = ""
+    high_temp_area.text = ""
+    low_temp_area.text = ""
+    load_weather_image("none")
 
 # --- Network setup ---
 network = Network(status_neopixel=board.NEOPIXEL, debug=False)
@@ -138,13 +178,6 @@ def load_weather_image(condition):
             current_weather_tile_grid = tile_grid
         else:
             current_weather_tile_grid = None
-
-def set_loading_state():
-    clear_error()
-    status_area.text = "LOADING..."
-    temperature_area.text = ""
-    description_area.text = ""
-    load_weather_image("none")
 
 while True:
     set_loading_state()
