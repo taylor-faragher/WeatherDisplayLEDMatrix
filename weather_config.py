@@ -51,7 +51,7 @@ WEATHER_CONFIG = {
         "clean_description": "MISTY",
         "description_color": 0xffffff,
         "image": "/images/cloudy.bmp",
-        "x_offset": 32,
+        "x_offset": 35,
     },
     "01n": {
         "clean_description": "CLEAR",
@@ -105,7 +105,7 @@ WEATHER_CONFIG = {
         "clean_description": "MISTY",
         "description_color": 0xffffff,
         "image": "/images/cloudy.bmp",
-        "x_offset": 32,
+        "x_offset": 35,
     },
     "default": {
         "clean_description": "none",
