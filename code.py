@@ -172,6 +172,11 @@ while True:
         max_temp_formatted = f"{max_temp}F"
         min_temp_formatted = f"{min_temp}F"
         wind_speed_formatted = f"{wind_speed}MPH"
+
+        if wind_speed < 10:
+            wind_area.x = 38
+        else:
+            wind_area.x = 35
     
         # Clean up the description
         cleanDescription = get_clean_description(icon)
