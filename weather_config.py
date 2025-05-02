@@ -24,16 +24,16 @@ WEATHER_CONFIG = {
         "x_offset": 34,
     },
     "09d": {
-        "clean_description": "RAINY",
+        "clean_description": "RAIN",
         "description_color": 0xffffff,
         "image": "/images/rain.bmp",
-        "x_offset": 32,
+        "x_offset": 38,
     },
     "10d": {
         "clean_description": "RAIN",
         "description_color": 0xffffff,
         "image": "/images/rain.bmp",
-        "x_offset": 32,
+        "x_offset": 38,
     },
     "11d": {
         "clean_description": "TSTORMS",
@@ -44,8 +44,8 @@ WEATHER_CONFIG = {
     "13d": {
         "clean_description": "SNOW",
         "description_color": 0xffffff,
-        "image": "/images/snow.bmp",
-        "x_offset": 32,
+        "image": "/images/snowy.bmp",
+        "x_offset": 37,
     },
     "50d": {
         "clean_description": "MISTY",
@@ -81,13 +81,13 @@ WEATHER_CONFIG = {
         "clean_description": "RAIN",
         "description_color": 0xffffff,
         "image": "/images/rain.bmp",
-        "x_offset": 32,
+        "x_offset": 38,
     },
     "10n": {
         "clean_description": "RAIN",
         "description_color": 0xffffff,
         "image": "/images/rain.bmp",
-        "x_offset": 32,
+        "x_offset": 38,
     },
     "11n": {
         "clean_description": "TSTORMS",
@@ -98,8 +98,8 @@ WEATHER_CONFIG = {
     "13n": {
         "clean_description": "SNOW",
         "description_color": 0xffffff,
-        "image": "/images/snow.bmp",
-        "x_offset": 32,
+        "image": "/images/snowy.bmp",
+        "x_offset": 37,
     },
     "50n": {
         "clean_description": "MISTY",
