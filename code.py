@@ -73,7 +73,7 @@ high_temp_area = Label(
     font,
     text="",
     color=0xFF0000,
-    x=32,
+    x=33,
     y=27,
     scale=1,
 )
