@@ -1,8 +1,5 @@
 import time
-import requests
-from PIL import Image, ImageDraw, ImageFont
 from rgbmatrix import RGBMatrix, RGBMatrixOptions, graphics
-
 from weather_api import fetch_weather_data
 from get_temp_color import get_temp_color
 from weather_config import get_clean_description, get_image_path, get_x_offset
@@ -19,24 +16,25 @@ options.hardware_mapping = 'adafruit-hat'  # or 'regular' depending on your HAT
 
 matrix = RGBMatrix(options=options)
 
-# Use the default font
+# Load a BDF font (use your own or one from the rpi-rgb-led-matrix/fonts directory)
 font = graphics.Font()
-font.LoadFont("fonts/TaylorsLEDFont-5.bdf")
-
-def draw_text(draw, text, pos, color, font):
-    draw.text(pos, text, fill=color, font=font)
+font.LoadFont("fonts/7x13.bdf")  # Change to your font path if needed
 
 def load_weather_image(condition):
     if condition == "none":
         return None
     image_path = get_image_path(condition)
     try:
-        img = Image.open(image_path).convert("RGB")
-        img = img.resize((32, 32))
-        return img
+        # rpi-rgb-led-matrix can load PPM, PGM, and some BMPs directly
+        # We'll use graphics.DrawLine to draw a simple icon, or you can use the sample image-viewer.py for more complex images
+        # For now, let's skip image loading for simplicity
+        return None
     except Exception as e:
         print(f"Error loading image: {e}")
         return None
+
+def draw_text(matrix, font, text, x, y, color):
+    graphics.DrawText(matrix, font, x, y, color, text)
 
 def main():
     global_temperature = ""
@@ -46,9 +44,8 @@ def main():
     global_wind_speed = ""
 
     while True:
-        # Create a blank image for drawing.
-        image = Image.new("RGB", (64, 32))
-        draw = ImageDraw.Draw(image)
+        # Clear the display
+        matrix.Clear()
 
         # Fetch weather data
         try:
@@ -74,19 +71,15 @@ def main():
             cleanDescription = get_clean_description(icon)
             desc_x = get_x_offset(icon)
 
-            # Draw weather image
-            weather_img = load_weather_image(icon)
-            if weather_img:
-                image.paste(weather_img, (0, 0))
+            # Draw weather image (optional, see note above)
+            # If you want to display an image, use the rgbmatrix sample image-viewer.py as a reference
 
             # Draw text
-            # draw_text(draw, temperature_formatted, (39, 6), temp_color, font)
-            # draw_text(draw, cleanDescription, (desc_x, -2), (255, 255, 255), font)
-            # draw_text(draw, wind_speed_formatted, (35, 14), (0, 255, 255), font)
-            # draw_text(draw, max_temp_formatted, (25, 22), (255, 0, 0), font)
-            # draw_text(draw, min_temp_formatted, (43, 22), (0, 0, 255), font)
-            color = graphics.Color(255, 255, 0)
-            graphics.DrawText(matrix, font, 10, 20, color, "Hello, World!")
+            draw_text(matrix, font, temperature_formatted, 39, 13, graphics.Color(*temp_color))
+            draw_text(matrix, font, cleanDescription, desc_x, 3, graphics.Color(255, 255, 255))
+            draw_text(matrix, font, wind_speed_formatted, 35, 20, graphics.Color(0, 255, 255))
+            draw_text(matrix, font, max_temp_formatted, 33, 27, graphics.Color(255, 0, 0))
+            draw_text(matrix, font, min_temp_formatted, 50, 27, graphics.Color(0, 0, 255))
 
             # Save fallback state
             global_temperature = temperature_formatted
@@ -96,15 +89,12 @@ def main():
             global_wind_speed = wind_speed_formatted
         else:
             # Draw fallback state or error
-            draw_text(draw, "ERROR", (1, 15), (255, 0, 0), font)
-            draw_text(draw, global_temperature, (39, 13), (0, 255, 0), font)
-            draw_text(draw, global_description, (32, 3), (255, 255, 255), font)
-            draw_text(draw, global_high_temp, (33, 27), (255, 0, 0), font)
-            draw_text(draw, global_low_temp, (50, 27), (0, 0, 255), font)
-            draw_text(draw, global_wind_speed, (35, 20), (0, 255, 255), font)
-
-        # Display image on matrix
-        matrix.SetImage(image)
+            draw_text(matrix, font, "ERROR", 1, 15, graphics.Color(255, 0, 0))
+            draw_text(matrix, font, global_temperature, 39, 13, graphics.Color(0, 255, 0))
+            draw_text(matrix, font, global_description, 32, 3, graphics.Color(255, 255, 255))
+            draw_text(matrix, font, global_high_temp, 33, 27, graphics.Color(255, 0, 0))
+            draw_text(matrix, font, global_low_temp, 50, 27, graphics.Color(0, 0, 255))
+            draw_text(matrix, font, global_wind_speed, 35, 20, graphics.Color(0, 255, 255))
 
         time.sleep(FETCH_INTERVAL_SECONDS)
 
