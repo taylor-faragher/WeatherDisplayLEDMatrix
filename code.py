@@ -18,7 +18,7 @@ matrix = RGBMatrix(options=options)
 
 # Load a BDF font (use your own or one from the rpi-rgb-led-matrix/fonts directory)
 font = graphics.Font()
-font.LoadFont("fonts/7x13.bdf")  # Change to your font path if needed
+font.LoadFont("fonts/TaylorsLEDFont-5.bdf")  # Change to your font path if needed
 
 def load_weather_image(condition):
     if condition == "none":
