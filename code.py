@@ -1,215 +1,111 @@
 import time
-import displayio
-import terminalio
-from adafruit_matrixportal.matrix import Matrix
-from adafruit_display_text.label import Label
-from adafruit_matrixportal.network import Network
-from adafruit_bitmap_font import bitmap_font
-import board
+import requests
+from PIL import Image, ImageDraw, ImageFont
+from rgbmatrix import RGBMatrix, RGBMatrixOptions
+
 from weather_api import fetch_weather_data
 from get_temp_color import get_temp_color
 from weather_config import get_clean_description, get_image_path, get_x_offset
 
-FETCH_INTERVAL_SECONDS = 900 # 15 minutes
-GLOBAL_TEMPERATURE_VARIABLE = 0
-GLOBAL_DESCRIPTION_VARIABLE = ""
-GLOBAL_HIGH_TEMP_VARIABLE = 0
-GLOBAL_LOW_TEMP_VARIABLE = 0
-GLOBAL_WIND_SPEED_VARIABLE = 0
+FETCH_INTERVAL_SECONDS = 900  # 15 minutes
 
 # --- Display setup ---
-matrix = Matrix(width=64, height=32, bit_depth=4)
-display = matrix.display
+options = RGBMatrixOptions()
+options.rows = 32
+options.cols = 64
+options.chain_length = 1
+options.parallel = 1
+options.hardware_mapping = 'adafruit-hat'  # or 'regular' depending on your HAT
 
-current_weather_tile_grid = None
+matrix = RGBMatrix(options=options)
 
-# Create a display group
-group = displayio.Group()
-display.root_group = group
+# Load fonts
+font_path = "fonts/TaylorsLEDFont-5.bdf"
+font = ImageFont.load(font_path)
+font_small = ImageFont.load_default()
 
-image_grid = None
-image_index = 0 
-
-font = bitmap_font.load_font("fonts/TaylorsLEDFont-5.bdf")
-
-# Add labels for showing the data
-status_area = Label(
-    terminalio.FONT,
-    text="LOADING...",
-    color=0x00FF00,
-    x=1,
-    y=15,
-    scale=1,
-)
-
-temperature_area = Label(
-    terminalio.FONT,
-    text="",
-    color=0x00FF00,
-    x=39,
-    y=13,
-    scale=1,
-)
-
-description_area = Label(
-    font,
-    text="",
-    color=0xffffff,
-    x=32,
-    y=3,
-    scale=1,
-)
-
-wind_area = Label(
-    font,
-    text="",
-    color=0x00FFFF,
-    x=35,
-    y=20,
-    scale=1,
-)
-
-high_temp_area = Label(
-    font,
-    text="",
-    color=0xFF0000,
-    x=33,
-    y=27,
-    scale=1,
-)
-
-low_temp_area = Label(
-    font,
-    text="",
-    color=0x0000FF,
-    x=50,
-    y=27,
-    scale=1,
-)
-
-error_area = Label(
-    terminalio.FONT,
-    text="",
-    color=0xFF0000,
-    x=61,
-    y=28,
-    scale=1,
-)
-
-# Add ALL labels to the group immediately
-group.append(status_area)
-group.append(temperature_area)
-group.append(description_area)
-group.append(wind_area)
-group.append(high_temp_area)
-group.append(low_temp_area)
-group.append(error_area)
-
-display.refresh()
-
-def set_fetching_state():
-    clear_error()
-    status_area.text = "FETCHING..."
-    temperature_area.text = ""
-    description_area.text = ""
-    wind_area.text = ""
-    high_temp_area.text = ""
-    low_temp_area.text = ""
-    load_weather_image("none")
-
-# --- Network setup ---
-network = Network(status_neopixel=board.NEOPIXEL, debug=False)
-network.connect()
-
-def set_error():
-    error_area.text = "."
-
-def clear_error():
-    error_area.text = ""
+def draw_text(draw, text, pos, color, font):
+    draw.text(pos, text, fill=color, font=font)
 
 def load_weather_image(condition):
-    """Load the appropriate weather image based on the condition."""
-    global current_weather_tile_grid
-    if current_weather_tile_grid is not None:
-        try:
-            if current_weather_tile_grid in group:
-                group.remove(current_weather_tile_grid)
-        except ValueError:
-            pass
     if condition == "none":
-        current_weather_tile_grid = None
-        return
+        return None
+    image_path = get_image_path(condition)
+    try:
+        img = Image.open(image_path).convert("RGB")
+        img = img.resize((32, 32))
+        return img
+    except Exception as e:
+        print(f"Error loading image: {e}")
+        return None
 
-    if condition is not None:
-        image_key = get_image_path(condition)
-        if condition is not "empty":
-            bitmap = displayio.OnDiskBitmap(image_key)
-            tile_grid = displayio.TileGrid(bitmap, pixel_shader=bitmap.pixel_shader, tile_width=32, tile_height=32, width=1, height=1)
-            group.append(tile_grid)
-            current_weather_tile_grid = tile_grid
+def main():
+    global_temperature = ""
+    global_description = ""
+    global_high_temp = ""
+    global_low_temp = ""
+    global_wind_speed = ""
+
+    while True:
+        # Create a blank image for drawing.
+        image = Image.new("RGB", (64, 32))
+        draw = ImageDraw.Draw(image)
+
+        # Fetch weather data
+        try:
+            weather_data = fetch_weather_data()
+        except Exception as e:
+            print(f"Error fetching weather: {e}")
+            weather_data = None
+
+        if weather_data:
+            current = weather_data['current']
+            temperature = current['temperature']
+            icon = current['icon']
+            min_temp = current['minTemperature']
+            max_temp = current['maxTemperature']
+            wind_speed = current['windSpeed']
+            temp_color = get_temp_color(temperature)
+
+            temperature_formatted = f"{temperature}F"
+            max_temp_formatted = f"{max_temp}F"
+            min_temp_formatted = f"{min_temp}F"
+            wind_speed_formatted = f"{wind_speed}MPH"
+
+            cleanDescription = get_clean_description(icon)
+            desc_x = get_x_offset(icon)
+
+            # Draw weather image
+            weather_img = load_weather_image(icon)
+            if weather_img:
+                image.paste(weather_img, (0, 0))
+
+            # Draw text
+            draw_text(draw, temperature_formatted, (39, 13), temp_color, font_small)
+            draw_text(draw, cleanDescription, (desc_x, 3), (255, 255, 255), font)
+            draw_text(draw, wind_speed_formatted, (35, 20), (0, 255, 255), font)
+            draw_text(draw, max_temp_formatted, (33, 27), (255, 0, 0), font)
+            draw_text(draw, min_temp_formatted, (50, 27), (0, 0, 255), font)
+
+            # Save fallback state
+            global_temperature = temperature_formatted
+            global_description = cleanDescription
+            global_high_temp = max_temp_formatted
+            global_low_temp = min_temp_formatted
+            global_wind_speed = wind_speed_formatted
         else:
-            current_weather_tile_grid = None
+            # Draw fallback state or error
+            draw_text(draw, "ERROR", (1, 15), (255, 0, 0), font_small)
+            draw_text(draw, global_temperature, (39, 13), (0, 255, 0), font_small)
+            draw_text(draw, global_description, (32, 3), (255, 255, 255), font)
+            draw_text(draw, global_high_temp, (33, 27), (255, 0, 0), font)
+            draw_text(draw, global_low_temp, (50, 27), (0, 0, 255), font)
+            draw_text(draw, global_wind_speed, (35, 20), (0, 255, 255), font)
 
-while True:
-    set_fetching_state()
-    weather_data = fetch_weather_data(status_area, network_client=network)
+        # Display image on matrix
+        matrix.SetImage(image)
 
-    if weather_data:
-        # Destructure the current day's weather data
-        current = weather_data['current']
+        time.sleep(FETCH_INTERVAL_SECONDS)
 
-        # Access nested values
-        temperature = current['temperature']
-        icon = current['icon']
-        min_temp = current['minTemperature']
-        max_temp = current['maxTemperature']
-        wind_speed = current['windSpeed']
-        temp_color = get_temp_color(temperature)
-        temperature_area.color = temp_color
-
-        # Format the strings
-        temperature_formatted = f"{temperature}F"
-        max_temp_formatted = f"{max_temp}F"
-        min_temp_formatted = f"{min_temp}F"
-        wind_speed_formatted = f"{wind_speed}MPH"
-
-        if wind_speed < 10:
-            wind_area.x = 38
-        else:
-            wind_area.x = 35
-    
-        # Clean up the description
-        cleanDescription = get_clean_description(icon)
-
-        # Set description offset
-        description_area.x = get_x_offset(icon)
-        
-        # Load the weather image
-        load_weather_image(icon)
-        
-        # Update global variables - This is so we have a fallback state of the data
-        GLOBAL_TEMPERATURE_VARIABLE = temperature_formatted
-        GLOBAL_DESCRIPTION_VARIABLE = cleanDescription
-        GLOBAL_HIGH_TEMP_VARIABLE = max_temp_formatted
-        GLOBAL_LOW_TEMP_VARIABLE = min_temp_formatted
-        GLOBAL_WIND_SPEED_VARIABLE = wind_speed_formatted
-
-        # Update text areas
-        temperature_area.text = temperature_formatted
-        description_area.text = cleanDescription
-        high_temp_area.text = max_temp_formatted
-        low_temp_area.text = min_temp_formatted
-        wind_area.text = wind_speed_formatted
-    else:
-        # Turn on error state
-        set_error()
-        # Update text area to with fallback state data
-        temperature_area.text = GLOBAL_TEMPERATURE_VARIABLE
-        description_area.text = GLOBAL_DESCRIPTION_VARIABLE
-        high_temp_area.text = GLOBAL_HIGH_TEMP_VARIABLE
-        low_temp_area.text = GLOBAL_LOW_TEMP_VARIABLE
-        wind_area.text = GLOBAL_WIND_SPEED_VARIABLE
-        load_weather_image(cleanDescription)
-        print("Failed to fetch data")
-
-    time.sleep(FETCH_INTERVAL_SECONDS)
+if __name__ == "__main__":
+    main()
