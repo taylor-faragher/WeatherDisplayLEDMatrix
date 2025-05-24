@@ -80,7 +80,7 @@ def main():
 
             # Draw text
             draw_text(draw, temperature_formatted, (39, 13), temp_color, font)
-            draw_text(draw, cleanDescription, (desc_x, 3), (255, 255, 255), font)
+            draw_text(draw, cleanDescription, (desc_x, 1), (255, 255, 255), font)
             draw_text(draw, wind_speed_formatted, (35, 20), (0, 255, 255), font)
             draw_text(draw, max_temp_formatted, (33, 27), (255, 0, 0), font)
             draw_text(draw, min_temp_formatted, (50, 27), (0, 0, 255), font)
