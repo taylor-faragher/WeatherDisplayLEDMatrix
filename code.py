@@ -1,7 +1,7 @@
 import time
 import requests
 from PIL import Image, ImageDraw, ImageFont
-from rgbmatrix import RGBMatrix, RGBMatrixOptions
+from rgbmatrix import RGBMatrix, RGBMatrixOptions, graphics
 
 from weather_api import fetch_weather_data
 from get_temp_color import get_temp_color
@@ -20,7 +20,8 @@ options.hardware_mapping = 'adafruit-hat'  # or 'regular' depending on your HAT
 matrix = RGBMatrix(options=options)
 
 # Use the default font
-font = ImageFont.load_default()
+font = graphics.Font()
+font.LoadFont("fonts/TaylorsLEDFont-5.bdf")
 
 def draw_text(draw, text, pos, color, font):
     draw.text(pos, text, fill=color, font=font)
@@ -79,11 +80,13 @@ def main():
                 image.paste(weather_img, (0, 0))
 
             # Draw text
-            draw_text(draw, temperature_formatted, (39, 6), temp_color, font)
-            draw_text(draw, cleanDescription, (desc_x, -2), (255, 255, 255), font)
-            draw_text(draw, wind_speed_formatted, (35, 14), (0, 255, 255), font)
-            draw_text(draw, max_temp_formatted, (25, 22), (255, 0, 0), font)
-            draw_text(draw, min_temp_formatted, (43, 22), (0, 0, 255), font)
+            # draw_text(draw, temperature_formatted, (39, 6), temp_color, font)
+            # draw_text(draw, cleanDescription, (desc_x, -2), (255, 255, 255), font)
+            # draw_text(draw, wind_speed_formatted, (35, 14), (0, 255, 255), font)
+            # draw_text(draw, max_temp_formatted, (25, 22), (255, 0, 0), font)
+            # draw_text(draw, min_temp_formatted, (43, 22), (0, 0, 255), font)
+            color = graphics.Color(255, 255, 0)
+            graphics.DrawText(matrix, font, 10, 20, color, "Hello, World!")
 
             # Save fallback state
             global_temperature = temperature_formatted
