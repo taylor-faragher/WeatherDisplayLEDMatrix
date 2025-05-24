@@ -66,9 +66,9 @@ def main():
             temp_color = get_temp_color(temperature)
 
             temperature_formatted = f"{temperature}F"
-            max_temp_formatted = f"{max_temp} F"
-            min_temp_formatted = f"{min_temp} F"
-            wind_speed_formatted = f"{wind_speed} MPH"
+            max_temp_formatted = f"{max_temp}F"
+            min_temp_formatted = f"{min_temp}F"
+            wind_speed_formatted = f"{wind_speed}MPH"
 
             cleanDescription = get_clean_description(icon)
             desc_x = get_x_offset(icon)
