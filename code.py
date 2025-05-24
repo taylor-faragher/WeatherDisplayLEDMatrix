@@ -69,7 +69,6 @@ def main():
             wind_speed = current['windSpeed']
             temp_color = get_temp_color(temperature)
             r, g, b = int_to_rgb(temp_color)
-            draw_text(matrix, font, temperature_formatted, 39, 13, graphics.Color(r, g, b))
 
             temperature_formatted = f"{temperature}F"
             max_temp_formatted = f"{max_temp}F"
@@ -83,7 +82,7 @@ def main():
             # If you want to display an image, use the rgbmatrix sample image-viewer.py as a reference
 
             # Draw text
-            draw_text(matrix, font, temperature_formatted, 39, 13, graphics.Color(*temp_color))
+            draw_text(matrix, font, temperature_formatted, 39, 13, graphics.Color(r, g, b))
             draw_text(matrix, font, cleanDescription, desc_x, 3, graphics.Color(255, 255, 255))
             draw_text(matrix, font, wind_speed_formatted, 35, 20, graphics.Color(0, 255, 255))
             draw_text(matrix, font, max_temp_formatted, 33, 27, graphics.Color(255, 0, 0))
