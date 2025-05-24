@@ -15,13 +15,13 @@ WEATHER_CONFIG = {
         "clean_description": "CLOUDY",
         "description_color": 0xffffff,
         "image": "/images/cloudy.bmp",
-        "x_offset": 34,
+        "x_offset": 30,
     },
     "04d": {
         "clean_description": "CLOUDY",
         "description_color": 0xffffff,
         "image": "/images/cloudy.bmp",
-        "x_offset": 34,
+        "x_offset": 30,
     },
     "09d": {
         "clean_description": "RAIN",
@@ -63,19 +63,19 @@ WEATHER_CONFIG = {
         "clean_description": "CLOUDY",
         "description_color": 0xffffff,
         "image": "/images/cloudy.bmp",
-        "x_offset": 34,
+        "x_offset": 30,
     },
     "03n": {
         "clean_description": "CLOUDY",
         "description_color": 0xffffff,
         "image": "/images/cloudy.bmp",
-        "x_offset": 34,
+        "x_offset": 30,
     },
     "04n": {
         "clean_description": "CLOUDY",
         "description_color": 0xffffff,
         "image": "/images/cloudy.bmp",
-        "x_offset": 34,
+        "x_offset": 30,
     },
     "09n": {
         "clean_description": "RAIN",
