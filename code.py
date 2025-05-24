@@ -19,9 +19,8 @@ options.hardware_mapping = 'adafruit-hat'  # or 'regular' depending on your HAT
 
 matrix = RGBMatrix(options=options)
 
-# Load fonts
-font = ImageFont.truetype("fonts/TaylorsLEDFont.ttf", size=2)
-font_small = ImageFont.load_default()
+# Use the default font
+font = ImageFont.load_default()
 
 def draw_text(draw, text, pos, color, font):
     draw.text(pos, text, fill=color, font=font)
@@ -80,7 +79,7 @@ def main():
                 image.paste(weather_img, (0, 0))
 
             # Draw text
-            draw_text(draw, temperature_formatted, (39, 13), temp_color, font_small)
+            draw_text(draw, temperature_formatted, (39, 13), temp_color, font)
             draw_text(draw, cleanDescription, (desc_x, 3), (255, 255, 255), font)
             draw_text(draw, wind_speed_formatted, (35, 20), (0, 255, 255), font)
             draw_text(draw, max_temp_formatted, (33, 27), (255, 0, 0), font)
@@ -94,8 +93,8 @@ def main():
             global_wind_speed = wind_speed_formatted
         else:
             # Draw fallback state or error
-            draw_text(draw, "ERROR", (1, 15), (255, 0, 0), font_small)
-            draw_text(draw, global_temperature, (39, 13), (0, 255, 0), font_small)
+            draw_text(draw, "ERROR", (1, 15), (255, 0, 0), font)
+            draw_text(draw, global_temperature, (39, 13), (0, 255, 0), font)
             draw_text(draw, global_description, (32, 3), (255, 255, 255), font)
             draw_text(draw, global_high_temp, (33, 27), (255, 0, 0), font)
             draw_text(draw, global_low_temp, (50, 27), (0, 0, 255), font)
