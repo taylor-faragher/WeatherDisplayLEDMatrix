@@ -20,7 +20,7 @@ options.hardware_mapping = 'adafruit-hat'  # or 'regular' depending on your HAT
 matrix = RGBMatrix(options=options)
 
 # Load fonts
-font = ImageFont.truetype("fonts/TaylorsLEDFont-5.ttf", size=12)
+font = ImageFont.truetype("fonts/TaylorsLEDFont.ttf", size=2)
 font_small = ImageFont.load_default()
 
 def draw_text(draw, text, pos, color, font):
