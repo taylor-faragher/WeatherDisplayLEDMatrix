@@ -21,7 +21,7 @@ matrix = RGBMatrix(options=options)
 
 # Load fonts
 font_path = "fonts/TaylorsLEDFont-5.bdf"
-font = ImageFont.load(font_path)
+font = ImageFont.load_path(font_path)
 font_small = ImageFont.load_default()
 
 def draw_text(draw, text, pos, color, font):
