@@ -66,9 +66,9 @@ def main():
             temp_color = get_temp_color(temperature)
 
             temperature_formatted = f"{temperature}F"
-            max_temp_formatted = f"{max_temp}F"
-            min_temp_formatted = f"{min_temp}F"
-            wind_speed_formatted = f"{wind_speed}MPH"
+            max_temp_formatted = f"{max_temp} F"
+            min_temp_formatted = f"{min_temp} F"
+            wind_speed_formatted = f"{wind_speed} MPH"
 
             cleanDescription = get_clean_description(icon)
             desc_x = get_x_offset(icon)
@@ -82,8 +82,8 @@ def main():
             draw_text(draw, temperature_formatted, (39, 6), temp_color, font)
             draw_text(draw, cleanDescription, (desc_x, -2), (255, 255, 255), font)
             draw_text(draw, wind_speed_formatted, (35, 14), (0, 255, 255), font)
-            draw_text(draw, max_temp_formatted, (28, 22), (255, 0, 0), font)
-            draw_text(draw, min_temp_formatted, (46, 22), (0, 0, 255), font)
+            draw_text(draw, max_temp_formatted, (25, 22), (255, 0, 0), font)
+            draw_text(draw, min_temp_formatted, (43, 22), (0, 0, 255), font)
 
             # Save fallback state
             global_temperature = temperature_formatted
