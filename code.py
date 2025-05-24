@@ -12,13 +12,14 @@ options.rows = 32
 options.cols = 64
 options.chain_length = 1
 options.parallel = 1
-options.hardware_mapping = 'adafruit-hat'  # or 'regular' depending on your HAT
+options.hardware_mapping = 'adafruit-hat'
 
 matrix = RGBMatrix(options=options)
 
-# Load a BDF font (use your own or one from the rpi-rgb-led-matrix/fonts directory)
 font = graphics.Font()
-font.LoadFont("fonts/TaylorsLEDFont-5.bdf")  # Change to your font path if needed
+largeFont = graphics.Font()
+font.LoadFont("fonts/TaylorsLEDFont-5.bdf")
+largeFont.LoadFont("fonts/TaylorsLEDFont-8.bdf")
 
 def int_to_rgb(color_int):
     r = (color_int >> 16) & 0xFF
@@ -75,16 +76,15 @@ def main():
             min_temp_formatted = f"{min_temp}F"
             wind_speed_formatted = f"{wind_speed}MPH"
 
+            wind_x_offset = 38 if wind_speed < 10 else 35
+
             cleanDescription = get_clean_description(icon)
             desc_x = get_x_offset(icon)
 
-            # Draw weather image (optional, see note above)
-            # If you want to display an image, use the rgbmatrix sample image-viewer.py as a reference
-
             # Draw text
-            draw_text(matrix, font, temperature_formatted, 39, 13, graphics.Color(r, g, b))
+            draw_text(matrix, largeFont, temperature_formatted, 39, 13, graphics.Color(r, g, b))
             draw_text(matrix, font, cleanDescription, desc_x, 3, graphics.Color(255, 255, 255))
-            draw_text(matrix, font, wind_speed_formatted, 35, 20, graphics.Color(0, 255, 255))
+            draw_text(matrix, font, wind_speed_formatted, wind_x_offset, 20, graphics.Color(0, 255, 255))
             draw_text(matrix, font, max_temp_formatted, 33, 27, graphics.Color(255, 0, 0))
             draw_text(matrix, font, min_temp_formatted, 50, 27, graphics.Color(0, 0, 255))
 
