@@ -20,6 +20,12 @@ matrix = RGBMatrix(options=options)
 font = graphics.Font()
 font.LoadFont("fonts/TaylorsLEDFont-5.bdf")  # Change to your font path if needed
 
+def int_to_rgb(color_int):
+    r = (color_int >> 16) & 0xFF
+    g = (color_int >> 8) & 0xFF
+    b = color_int & 0xFF
+    return (r, g, b)
+
 def load_weather_image(condition):
     if condition == "none":
         return None
@@ -62,6 +68,8 @@ def main():
             max_temp = current['maxTemperature']
             wind_speed = current['windSpeed']
             temp_color = get_temp_color(temperature)
+            r, g, b = int_to_rgb(temp_color)
+            draw_text(matrix, font, temperature_formatted, 39, 13, graphics.Color(r, g, b))
 
             temperature_formatted = f"{temperature}F"
             max_temp_formatted = f"{max_temp}F"
