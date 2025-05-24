@@ -79,11 +79,11 @@ def main():
                 image.paste(weather_img, (0, 0))
 
             # Draw text
-            draw_text(draw, temperature_formatted, (39, 13), temp_color, font)
+            draw_text(draw, temperature_formatted, (39, 6), temp_color, font)
             draw_text(draw, cleanDescription, (desc_x, -2), (255, 255, 255), font)
-            draw_text(draw, wind_speed_formatted, (35, 20), (0, 255, 255), font)
-            draw_text(draw, max_temp_formatted, (33, 27), (255, 0, 0), font)
-            draw_text(draw, min_temp_formatted, (50, 27), (0, 0, 255), font)
+            draw_text(draw, wind_speed_formatted, (35, 14), (0, 255, 255), font)
+            draw_text(draw, max_temp_formatted, (33, 21), (255, 0, 0), font)
+            draw_text(draw, min_temp_formatted, (50, 21), (0, 0, 255), font)
 
             # Save fallback state
             global_temperature = temperature_formatted
