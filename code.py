@@ -1,4 +1,5 @@
 import time
+from PIL import Image
 from rgbmatrix import RGBMatrix, RGBMatrixOptions, graphics
 from weather_api import fetch_weather_data
 from get_temp_color import get_temp_color
@@ -32,10 +33,9 @@ def load_weather_image(condition):
         return None
     image_path = get_image_path(condition)
     try:
-        # rpi-rgb-led-matrix can load PPM, PGM, and some BMPs directly
-        # We'll use graphics.DrawLine to draw a simple icon, or you can use the sample image-viewer.py for more complex images
-        # For now, let's skip image loading for simplicity
-        return None
+        img = Image.open(image_path)
+        img = img.resize((32, 32))
+        return img
     except Exception as e:
         print(f"Error loading image: {e}")
         return None
@@ -80,6 +80,10 @@ def main():
 
             cleanDescription = get_clean_description(icon)
             desc_x = get_x_offset(icon)
+
+            weather_img = load_weather_image(icon)
+            if weather_img:
+                matrix.SetImage(weather_img, 0, 0)
 
             # Draw text
             draw_text(matrix, font, temperature_formatted, 39, 13, graphics.Color(r, g, b))
