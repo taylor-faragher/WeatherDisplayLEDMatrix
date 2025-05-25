@@ -82,7 +82,7 @@ def main():
             desc_x = get_x_offset(icon)
 
             # Draw text
-            draw_text(matrix, largeFont, temperature_formatted, 39, 13, graphics.Color(r, g, b))
+            draw_text(matrix, font, temperature_formatted, 39, 13, graphics.Color(r, g, b))
             draw_text(matrix, font, cleanDescription, desc_x, 3, graphics.Color(255, 255, 255))
             draw_text(matrix, font, wind_speed_formatted, wind_x_offset, 20, graphics.Color(0, 255, 255))
             draw_text(matrix, font, max_temp_formatted, 33, 27, graphics.Color(255, 0, 0))
