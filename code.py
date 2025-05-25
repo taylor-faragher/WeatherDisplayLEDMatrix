@@ -33,7 +33,7 @@ def load_weather_image(condition):
         return None
     image_path = get_image_path(condition)
     try:
-        img = Image.open(image_path)
+        img = Image.open(image_path).convert("RGB")
         img = img.resize((32, 32))
         return img
     except Exception as e:
