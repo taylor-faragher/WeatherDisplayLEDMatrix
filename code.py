@@ -20,7 +20,7 @@ matrix = RGBMatrix(options=options)
 font = graphics.Font()
 largeFont = graphics.Font()
 font.LoadFont("fonts/TaylorsLEDFont-5.bdf")
-largeFont.LoadFont("fonts/TaylorsLEDFont-7.bdf")
+largeFont.LoadFont("fonts/TaylorsLEDFont-8pt.bdf")
 
 def int_to_rgb(color_int):
     r = (color_int >> 16) & 0xFF
