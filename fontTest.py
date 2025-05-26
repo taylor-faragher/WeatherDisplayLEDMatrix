@@ -22,7 +22,7 @@ def main():
         
         # Optionally, you can draw more text or graphics here
         graphics.DrawText(matrix, largeFont, 1, 16, graphics.Color(255, 255, 255), "KLMNOPQRST")
-        graphics.DrawText(matrix, largeFont, 1, 26, graphics.Color(0, 255, 0), "UVWXYZ")
+        graphics.DrawText(matrix, largeFont, 1, 26, graphics.Color(255, 255, 255), "UVWXYZ")
 
 
 if __name__ == "__main__":
