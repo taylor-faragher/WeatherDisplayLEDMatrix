@@ -53,7 +53,7 @@ def main():
         # Clear the display
         matrix.Clear()
 
-        draw_text(matrix, largeFont, "LOADING...", 1, 15, graphics.Color(0, 255, 0))
+        draw_text(matrix, largeFont, "Fetching...", 1, 15, graphics.Color(0, 255, 0))
 
         # Fetch weather data
         try:
