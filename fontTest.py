@@ -13,15 +13,16 @@ largeFont = graphics.Font()
 largeFont.LoadFont("fonts/TaylorsLEDFont-8pt.bdf")
 
 def main():
-    # Clear the display
-    matrix.Clear()
+    while True:
+        # Clear the display
+        matrix.Clear()
 
-    # Draw some text using the large font
-    graphics.DrawText(matrix, largeFont, 10, 20, graphics.Color(255, 255, 255), "ABCDEFGHIJK")
-    
-    # Optionally, you can draw more text or graphics here
-    graphics.DrawText(matrix, largeFont, 10, 40, graphics.Color(0, 255, 0), "LMNOPQRSTU")
-    graphics.DrawText(matrix, largeFont, 10, 60, graphics.Color(0, 0, 255), "VWXYZ")
+        # Draw some text using the large font
+        graphics.DrawText(matrix, largeFont, 10, 20, graphics.Color(255, 255, 255), "ABCDEFGHIJK")
+        
+        # Optionally, you can draw more text or graphics here
+        graphics.DrawText(matrix, largeFont, 10, 40, graphics.Color(0, 255, 0), "LMNOPQRSTU")
+        graphics.DrawText(matrix, largeFont, 10, 60, graphics.Color(0, 0, 255), "VWXYZ")
 
 
 if __name__ == "__main__":
