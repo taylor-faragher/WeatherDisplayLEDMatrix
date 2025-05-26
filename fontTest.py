@@ -1,4 +1,5 @@
 from rgbmatrix import RGBMatrix, RGBMatrixOptions, graphics
+import time
 
 # --- Display setup ---
 options = RGBMatrixOptions()
@@ -12,18 +13,22 @@ matrix = RGBMatrix(options=options)
 largeFont = graphics.Font()
 largeFont.LoadFont("fonts/TaylorsLEDFont-8pt.bdf")
 
+def draw_text(matrix, font, text, x, y, color):
+    graphics.DrawText(matrix, font, x, y, color, text)
+
 def main():
     while True:
         # Clear the display
         matrix.Clear()
 
         # Draw some text using the large font
-        graphics.DrawText(matrix, largeFont, 1, 6, graphics.Color(255, 255, 255), "ABCDEFGHIJ")
+        draw_text(matrix, largeFont, "ABCDEFGHIJ", 1, 6, graphics.Color(255, 255, 255))
         
         # Optionally, you can draw more text or graphics here
-        graphics.DrawText(matrix, largeFont, 1, 16, graphics.Color(255, 255, 255), "KLMNOPQRST")
-        graphics.DrawText(matrix, largeFont, 1, 26, graphics.Color(255, 255, 255), "UVWXYZ")
+        draw_text(matrix, largeFont, "KLMNOPQRST", 1, 16, graphics.Color(255, 255, 255))
+        draw_text(matrix, largeFont, "UVWXYZ", 1, 26, graphics.Color(255, 255, 255))
 
+        time.sleep(900)
 
 if __name__ == "__main__":
     main()
