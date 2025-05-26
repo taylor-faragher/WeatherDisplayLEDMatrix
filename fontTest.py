@@ -18,11 +18,11 @@ def main():
         matrix.Clear()
 
         # Draw some text using the large font
-        graphics.DrawText(matrix, largeFont, 1, 1, graphics.Color(255, 255, 255), "ABCDEFGHIJK")
+        graphics.DrawText(matrix, largeFont, 1, 3, graphics.Color(255, 255, 255), "ABCDEFGHIJK")
         
         # Optionally, you can draw more text or graphics here
-        graphics.DrawText(matrix, largeFont, 1, 10, graphics.Color(255, 255, 255), "LMNOPQRSTU")
-        graphics.DrawText(matrix, largeFont, 1, 20, graphics.Color(255, 255, 255), "VWXYZ")
+        graphics.DrawText(matrix, largeFont, 1, 13, graphics.Color(255, 255, 255), "LMNOPQRSTU")
+        graphics.DrawText(matrix, largeFont, 1, 23, graphics.Color(255, 255, 255), "VWXYZ")
 
 
 if __name__ == "__main__":
