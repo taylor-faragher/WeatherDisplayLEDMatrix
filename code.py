@@ -86,7 +86,7 @@ def main():
 
             # Draw text
             # draw_text(matrix, font, temperature_formatted, 39, 13, graphics.Color(r, g, b))
-            draw_text(matrix, largeFont, temperature_formatted, 39, 13, graphics.Color(255, 255, 255))
+            draw_text(matrix, largeFont, temperature_formatted, 40, 14, graphics.Color(255, 255, 255))
             draw_text(matrix, font, cleanDescription, desc_x, 3, graphics.Color(255, 255, 255))
             draw_text(matrix, font, wind_speed_formatted, wind_x_offset, 20, graphics.Color(0, 255, 255))
             draw_text(matrix, font, max_temp_formatted, 33, 27, graphics.Color(255, 0, 0))
@@ -101,7 +101,7 @@ def main():
         else:
             # Draw fallback state or error
             draw_text(matrix, font, "ERROR", 1, 15, graphics.Color(255, 0, 0))
-            draw_text(matrix, largeFont, global_temperature, 39, 13, graphics.Color(0, 255, 0))
+            draw_text(matrix, largeFont, global_temperature, 40, 14, graphics.Color(0, 255, 0))
             draw_text(matrix, font, global_description, 32, 3, graphics.Color(255, 255, 255))
             draw_text(matrix, font, global_high_temp, 33, 27, graphics.Color(255, 0, 0))
             draw_text(matrix, font, global_low_temp, 50, 27, graphics.Color(0, 0, 255))
