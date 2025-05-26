@@ -63,7 +63,6 @@ def main():
             weather_data = None
 
         if weather_data:
-            matrix.Clear()
             current = weather_data['current']
             temperature = current['temperature']
             icon = current['icon']
@@ -88,6 +87,7 @@ def main():
                 matrix.SetImage(weather_img, 0, 0)
 
             # Draw text
+            matrix.Clear()
             # draw_text(matrix, font, temperature_formatted, 39, 13, graphics.Color(r, g, b))
             draw_text(matrix, largeFont, temperature_formatted, 40, 14, graphics.Color(255, 255, 255))
             draw_text(matrix, font, cleanDescription, desc_x, 3, graphics.Color(255, 255, 255))
