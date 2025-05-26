@@ -21,8 +21,8 @@ def main():
         graphics.DrawText(matrix, largeFont, 1, 1, graphics.Color(255, 255, 255), "ABCDEFGHIJK")
         
         # Optionally, you can draw more text or graphics here
-        graphics.DrawText(matrix, largeFont, 1, 10, graphics.Color(0, 255, 0), "LMNOPQRSTU")
-        graphics.DrawText(matrix, largeFont, 1, 20, graphics.Color(0, 0, 255), "VWXYZ")
+        graphics.DrawText(matrix, largeFont, 1, 10, graphics.Color(255, 255, 255), "LMNOPQRSTU")
+        graphics.DrawText(matrix, largeFont, 1, 20, graphics.Color(255, 255, 255), "VWXYZ")
 
 
 if __name__ == "__main__":
