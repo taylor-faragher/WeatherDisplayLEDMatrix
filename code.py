@@ -83,11 +83,13 @@ def main():
             desc_x = get_x_offset(icon)
 
             weather_img = load_weather_image(icon)
+
+            matrix.Clear()
+            
             if weather_img:
                 matrix.SetImage(weather_img, 0, 0)
 
             # Draw text
-            matrix.Clear()
             # draw_text(matrix, font, temperature_formatted, 39, 13, graphics.Color(r, g, b))
             draw_text(matrix, largeFont, temperature_formatted, 40, 14, graphics.Color(255, 255, 255))
             draw_text(matrix, font, cleanDescription, desc_x, 3, graphics.Color(255, 255, 255))
