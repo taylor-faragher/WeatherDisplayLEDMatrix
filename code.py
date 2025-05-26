@@ -53,6 +53,8 @@ def main():
         # Clear the display
         matrix.Clear()
 
+        draw_text(matrix, largeFont, "LOADING...", 1, 15, graphics.Color(0, 255, 0))
+
         # Fetch weather data
         try:
             weather_data = fetch_weather_data()
@@ -61,6 +63,7 @@ def main():
             weather_data = None
 
         if weather_data:
+            matrix.Clear()
             current = weather_data['current']
             temperature = current['temperature']
             icon = current['icon']
