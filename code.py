@@ -1,5 +1,6 @@
 import time
 from PIL import Image
+import os
 from rgbmatrix import RGBMatrix, RGBMatrixOptions, graphics
 from weather_api import fetch_weather_data
 from get_temp_color import get_temp_color
@@ -17,10 +18,15 @@ options.hardware_mapping = 'adafruit-hat'
 
 matrix = RGBMatrix(options=options)
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 font = graphics.Font()
 largeFont = graphics.Font()
-font.LoadFont("fonts/TaylorsLEDFont-5.bdf")
-largeFont.LoadFont("fonts/TaylorsLEDFont-8pt.bdf")
+font_path_small = os.path.join(BASE_DIR, "fonts", "TaylorsLEDFont-5.bdf")
+font_path_large = os.path.join(BASE_DIR, "fonts", "TaylorsLEDFont-8pt.bdf")
+
+font.LoadFont(font_path_small)
+largeFont.LoadFont(font_path_large)
 
 def int_to_rgb(color_int):
     r = (color_int >> 16) & 0xFF
